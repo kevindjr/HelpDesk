@@ -1,0 +1,114 @@
+generator client {
+  provider = "prisma-client-js"
+}
+
+datasource db {
+  provider = "mysql"
+}
+
+model Role {
+  id          Int     @id @default(autoincrement())
+  name        String  @unique
+  description String?
+  users       User[]
+
+  @@map("roles")
+}
+
+model User {
+  id               Int             @id @default(autoincrement())
+  roleId           Int
+  adObjectId       String          @unique
+  email            String          @unique
+  fullName         String
+  department       String?
+  createdAt        DateTime        @default(now())
+  ticketComments   TicketComment[]
+  ticketHistory    TicketHistory[]
+  assignedTickets  Ticket[]        @relation("TicketTechnician")
+  requestedTickets Ticket[]        @relation("TicketRequester")
+  role             Role            @relation(fields: [roleId], references: [id])
+
+  @@index([roleId])
+  @@map("users")
+}
+
+model Category {
+  id            Int      @id @default(autoincrement())
+  name          String   @unique
+  description   String?
+  isAiGenerated Boolean  @default(false)
+  tickets       Ticket[]
+
+  @@map("categories")
+}
+
+model Ticket {
+  id             Int             @id @default(autoincrement())
+  requesterId    Int
+  assignedTechId Int?
+  categoryId     Int?
+  title          String
+  description    String
+  location       String?
+  status         TicketStatus    @default(Open)
+  priority       TicketPriority  @default(Medium)
+  isUrgentFlag   Boolean         @default(false)
+  createdAt      DateTime        @default(now())
+  updatedAt      DateTime        @updatedAt
+  comments       TicketComment[]
+  history        TicketHistory[]
+  assignedTech   User?           @relation("TicketTechnician", fields: [assignedTechId], references: [id])
+  category       Category?       @relation(fields: [categoryId], references: [id])
+  requester      User            @relation("TicketRequester", fields: [requesterId], references: [id])
+
+  @@index([requesterId])
+  @@index([assignedTechId])
+  @@index([categoryId])
+  @@index([status])
+  @@map("tickets")
+}
+
+model TicketHistory {
+  id             Int           @id @default(autoincrement())
+  ticketId       Int
+  changedById    Int
+  action         String
+  previousStatus TicketStatus?
+  newStatus      TicketStatus?
+  createdAt      DateTime      @default(now())
+  changedBy      User          @relation(fields: [changedById], references: [id])
+  ticket         Ticket        @relation(fields: [ticketId], references: [id], onDelete: Cascade)
+
+  @@index([ticketId])
+  @@index([changedById])
+  @@map("ticket_history")
+}
+
+model TicketComment {
+  id        Int      @id @default(autoincrement())
+  ticketId  Int
+  authorId  Int
+  body      String
+  createdAt DateTime @default(now())
+  author    User     @relation(fields: [authorId], references: [id])
+  ticket    Ticket   @relation(fields: [ticketId], references: [id], onDelete: Cascade)
+
+  @@index([ticketId])
+  @@index([authorId])
+  @@map("ticket_comments")
+}
+
+enum TicketStatus {
+  Open
+  InProgress
+  Resolved
+  Cancelled
+}
+
+enum TicketPriority {
+  Low
+  Medium
+  High
+  Urgent
+}
