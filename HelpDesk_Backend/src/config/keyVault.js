@@ -1,11 +1,7 @@
 const { SecretClient } = require("@azure/keyvault-secrets");
-const { ClientSecretCredential } = require("@azure/identity");
+const { DefaultAzureCredential } = require("@azure/identity");
 
-const credential = new ClientSecretCredential(
-  process.env.AZURE_TENANT_ID,
-  process.env.AZURE_CLIENT_ID,
-  process.env.AZURE_CLIENT_SECRET
-);
+const credential = new DefaultAzureCredential();
 
 const client = new SecretClient(
   process.env.KEY_VAULT_URL,
