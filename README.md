@@ -1,8 +1,9 @@
 # University IT HelpDesk System
 
-A web-based University IT HelpDesk System for managing IT support requests from creation to resolution.
+# Group Member
 
-The system provides different interfaces and permissions for **Students, Faculty, Technicians, and Administrators**. It supports ticket creation, automatic AI-based categorization, comments, ticket assignment, status tracking, cancellation, activity history, user management, and role-based access control.
+# Thaw Phone Thant - 6715029
+# Wai Yan Thet Min - 6715037
 
 ---
 
