@@ -1,4 +1,4 @@
-# University IT HelpDesk System
+# University IT Ticketing HelpDesk System
 
 # Group Member
 
